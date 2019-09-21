@@ -6,7 +6,9 @@ const ray = require('./js/ray')
 //start express app
 const express = require('express');
 const app = express();
-app.use('/',express.static(__dirname));
+//configure middleware
+app.use(express.static(__dirname));
+app.use(express.json());
 //set views
 // app.set('view engine','pug');
 // app.set('views','./views');

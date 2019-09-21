@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <!--<html class="no-js"><!--> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,18 +9,22 @@
     </head>
     <body>
         <h1>Optical System</h1>
-        <div id="lensPrescription" class="dropdown">
+        <table id="lensPrescription">
+
+        </table>
+        <div class="dropdown">
             <button id="surfbtn" class="dropbtn">Add Surface</button>
             <div id="myDropdown" class="dropdown-content">
-              <a href="#home">Home</a>
-              <a href="#about">About</a>
-              <a href="#contact">Contact</a>
             </div>
         </div>
-        <button type="button" id ="testbtn">test</button>
+        <div>
+            <button id="tracebtn" class="dropbtn">Run Trace</button>
+        </div>
+        
+        
+        <script src="../js/opticalSystem.js"></script>
+        <script src="../js/home_client.js"></script>
     </body>
 
-    <script src="../js/opticalSystem.js"></script>
-    <script src="../js/home_client.js"></script>
     
 </html>

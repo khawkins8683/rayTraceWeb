@@ -30,3 +30,8 @@
   
 .dropdown a:hover {background-color: rgb(161, 197, 226);}
 .show {display: block;}
+
+
+.surfProp {
+	width: 75px;
+}

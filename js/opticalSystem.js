@@ -148,7 +148,7 @@ if(typeof exports != 'undefined'){
 
     function Plane(){}
     applyPrototype(Surface, Plane);
-
+    Plane.prototype.initShape = function(){this.curv=0}
     Plane.prototype.center = function(){
         return this.r;
     }
@@ -157,7 +157,7 @@ if(typeof exports != 'undefined'){
     }
 
     // --- Sphere -----------------------------------------------------------------------------------------------------------
-    function Sphere(curv = 0){	this.curv = curv; }
+    function Sphere(){}
     applyPrototype(Surface, Sphere);
     //Add the init to the main call
     Sphere.prototype.initShape = function(curv=1){
@@ -232,15 +232,8 @@ if(typeof exports != 'undefined'){
         return max;
     }
 
-
-    // const os = {
-    //     newSurface: function(n1,n2,r,eta,sd,type="refract",id=1,label=""){
-    //         let s1 = new Surface();
-    //         s1.init(n1,n2,r,eta,sd,type,id,label);
-    //         return s1;
-    //     }
-    // }
-
-    exports.Surface = Surface
+    exports.Plane = Plane;
+    exports.Sphere = Sphere;
+    
 })(typeof exports === 'undefined'? this['os']={} : exports);
 //module.exports = os;
