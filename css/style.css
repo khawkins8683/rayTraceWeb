@@ -35,3 +35,10 @@
 .surfProp {
 	width: 75px;
 }
+
+.toolbox {
+	width:100%;
+	display: inline-block;
+	background-color: aquamarine;
+	border: solid black 2px;
+}

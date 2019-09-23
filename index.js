@@ -6,22 +6,17 @@ const ray = require('./js/ray')
 //start express app
 const express = require('express');
 const app = express();
+
+//get routes
+const home = require('./routes/home');
+const tracedata = require('./routes/tracedata');
+
 //configure middleware
 app.use(express.static(__dirname));
 app.use(express.json());
-//set views
-// app.set('view engine','pug');
-// app.set('views','./views');
-//load code for the browser
-// var home_client = require('./js/home_client'),
-//     sys = require('sys');
-// sys.puts(home_client.test());
-//get routes
-const home = require('./routes/home');
-
-
-//middle ware
+//configure routes
 app.use('/', home);
+app.use('/', tracedata);
 
 //configure app
 const port = process.env.PORT || 3000;

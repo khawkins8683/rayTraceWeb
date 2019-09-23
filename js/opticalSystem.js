@@ -1,6 +1,5 @@
-//dependencies
+//TODO --- set up for complex refractive index
 
-//note this seems a little sketchy because i extend the math module
 
 //TODO --- prototypical in heritance
 // combine this with trace obj
@@ -37,6 +36,9 @@ if(typeof exports != 'undefined'){
         this.aperture = {type:"circle", semiDiameter: sd}; 
         this.type = type;//"reflect" or "refract"
         this.label = label;
+    }
+    Surface.prototype.initAperture = function(sd=10){
+        this.aperture = {type:"circle", semiDiameter: sd};
     }
     //Trace Methods   --------------------------------------------------------------------------------
     Surface.prototype.traceSurface = function(ray){
@@ -121,7 +123,7 @@ if(typeof exports != 'undefined'){
         //surface power
     Surface.prototype.power = function(){
         let p = 0;
-        if(type == "refract"){
+        if(this.type == "refract"){
             p = (this.n2 - this.n1)*this.curv;
         }else{
             p = -2*this.n1*this.curv;
@@ -199,17 +201,19 @@ if(typeof exports != 'undefined'){
     //---------------------------SYSTEM----------------------------------------------
     //---------------------------SYSTEM----------------------------------------------
     //---------------------------SYSTEM-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-    function System(surfaces){
-        
-        let system = {};
-        //note this is an object and the keys should be the unique surface ids -- this should be automatically done
-        for(let i=0; i<surfaces.length; i++){
-            surfaces[i].id = i+1;
-            system[i+1] = surfaces[i];
+    //Utility function
+    function paramToValue(param,value){
+        let valueOut = value;//type and 
+        if(param == 'n1'||param=='n2'||param=='curv'||param =='aperture'){
+            valueOut = eval(value);
+        }else if(param == 'r'||param =='k'){
+            valueOut = eval('['+value+']');
+            if(param == 'k') valueOut = math.normalize(valueOut);
         }
-        this.system = system;
-        this.surfaces = surfaces;
+        return valueOut;
     }
+    //
+    function System(){}
     System.prototype.traceSystem = function(ray){
         let rayPath = [ray];
         let rayCurrent = ray;
@@ -231,9 +235,56 @@ if(typeof exports != 'undefined'){
         }
         return max;
     }
+    System.prototype.createSystem = function(specs){
+
+        let surfList = [];
+        let system = {};
+
+        for(let s in specs){
+            let inputs = specs[s];
+            let Constructor = eval(inputs.geometry);
+            let surf = new Constructor; 
+            for(let param in inputs){
+                if(param == 'aperture'){
+                    surf.initAperture( paramToValue(param,inputs[param]) );
+                }else{
+                    surf[param] = paramToValue(param,inputs[param]);
+                }
+            }
+            surfList.push(surf);
+        }
+        //note this is an object and the keys should be the unique surface ids -- this should be automatically done
+        for(let i=0; i<surfList.length; i++){
+            surfList[i].id = i+1;
+            system[i+1] = surfList[i];
+        }
+        this.system = system;
+        this.surfaces = surfList;
+    }
+    System.prototype.power = function(){
+        //for each surface
+        let sysPow = this.surfaces[0].power();
+        let pow1 = sysPow;
+        //calculate the rear pricipal plane position
+        let pRear = this.surfaces[0].r;//single refractive/reflective surface/ P is at surface vertex
+        if(this.surfaces.length === 1) return [sysPow,pRear];
+        for(let i=1; i < this.surfaces.length; i++ ){
+            let surfPow = this.surfaces[i].power();
+            //if type is reflect use n1
+            let t = math.chain(pRear).subtract(this.surfaces[i].r).norm().done();
+            sysPow = sysPow + surfPow - sysPow*surfPow*t/this.surfaces[i].n2;
+            //now calculate new rear priciple plane position
+            let pRearD = -1*(sysPow/pow1)*t;//this is a scalar not a vector
+            pRear = math.chain(this.surfaces[i].k).multiply(pRearD).add(this.surfaces[i].k).done();
+            pow1 = sysPow;
+            //make sure refractive index gets canceled correctly
+        }
+        return [sysPow, pRear];
+    }
 
     exports.Plane = Plane;
     exports.Sphere = Sphere;
+    exports.System = System;
     
 })(typeof exports === 'undefined'? this['os']={} : exports);
 //module.exports = os;

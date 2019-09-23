@@ -1,4 +1,4 @@
-//function that takes os object and gives list of surfaces
+//function that takes os object and gives list of surfaces --------------------- ------------- -------------- ------------- ------------------ ------ 
 surfaceTypes = function(os){
     let typeList = []
     for(t in os){
@@ -7,11 +7,12 @@ surfaceTypes = function(os){
     return typeList
 }
 
-//function that takes a surface type and returns a list of inputs
+//function that takes a surface type and returns a list of inputs   ---------------------------- --------- ---- --------------
 inputList = function(os,surfType){
     let surfDef = new os[surfType];
     surfDef.init();
     surfDef.initShape();//initialize geometry
+    surfDef.initAperture();
     let inputs = Object.getOwnPropertyNames(surfDef);
     let inputList = []
     for(let i = 0; i<inputs.length; i++){
@@ -19,6 +20,13 @@ inputList = function(os,surfType){
         inputList.push([ prop, surfDef[prop] ]);
     }
     return inputList
+}
+function paramType(param){
+    let t = 'text';
+    if(param == 'n1'||param=='n2'||param=='curv'){
+        t = 'number';
+    }
+    return t;
 }
 
 
@@ -40,7 +48,8 @@ function addSurfaceInput(os, surfType){
             item = document.createElement("TD");
             let input = document.createElement('INPUT');
             input.className = 'surfProp';
-            input.setAttribute('type','text');//todo change by type string array number
+            input.setAttribute('type',paramType(inputs[i][0]));//todo change by type string array number
+            input.onchange = setSysPower;
             if(inputs[i][0] === 'aperture'){
                 input.value = inputs[i][1].semiDiameter;
             }else{
@@ -57,6 +66,7 @@ function addSurfaceInput(os, surfType){
 }
 
 //MAin -------------------------------
+//Table headings
 let inputs = inputList(os,"Sphere");
 let lp = document.getElementById('lensPrescription');
 let row = document.createElement("TR");
@@ -84,11 +94,20 @@ for(let i = 0; i<typeList.length; i++){
     dropDiv.append(aTag);
 }
 
-
+//Add surface btn
 let surfBTN = document.getElementById('surfbtn');
 surfBTN.onclick = function(){
     document.getElementById("myDropdown").classList.toggle("show");
 }
+//surface power
+setSysPower = function(){
+    let sys = new os.System;//this should be defined globally and just updated
+    sys.createSystem(getOpticalSystemData());
+    let power = sys.power()[0];
+    let powerNode = document.getElementById('powerbox');
+    powerNode.innerHTML = 'System Power: ' + power;
+}
+
 // Close the dropdown if the user clicks outside of it
 window.onclick = function(event) {
     if (!event.target.matches('.dropbtn')) {
@@ -108,7 +127,7 @@ function getOpticalSystemData(){
     let lp = document.getElementById('lensPrescription');
     let surfaceRows = lp.children;
     let opticalSystem = {}
-    console.log(surfaceRows);
+    //console.log(surfaceRows);
     for(let i =1; i<surfaceRows.length; i++){
         let inputs = surfaceRows[i].children;
         let surfData  = {
@@ -148,10 +167,11 @@ function postRayTrace(url,cb){// the cb will act on the recieved ray trace data
     //Send optical system data 
     let data = getOpticalSystemData();
     console.log('sending data ', JSON.stringify(data) );
+    dataSend = JSON.stringify(data);
     xhttp.send(JSON.stringify(data));//send a request to the server
 }
-
+let dataSend = {};
 let traceBTN = document.getElementById('tracebtn');
 traceBTN.onclick = function(){
-    postRayTrace('/raytracedata',displayRayTaceData)
+    postRayTrace('/tracedata',displayRayTaceData)
 }
