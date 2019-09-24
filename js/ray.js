@@ -288,10 +288,10 @@ if(typeof exports != 'undefined'){
         this.rayGridOut = gridOut;
     }
 
-    ///// Ray Field 
-    // function RayField(pathList){
-    //     this.rayPaths = pathList;
-    // }
+    /// Ray Field 
+    function RayField(pathList){
+        this.rayPaths = pathList;
+    }
     //TODO - add field info
         //image height
         //obj distance
@@ -303,6 +303,7 @@ if(typeof exports != 'undefined'){
     exports.CollimatedWavefrontGrid = CollimatedWavefrontGrid;
     exports.RayPath = RayPath;
     exports.RaySegment = RaySegment;
+    exports.RayField = RayField;
 
-})(typeof exports === 'undefined'? this['os']={} : exports);
+})(typeof exports === 'undefined'? this['ray']={} : exports);
 //module.exports = ray;

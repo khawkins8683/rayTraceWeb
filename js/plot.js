@@ -75,7 +75,7 @@ SystemPlot.prototype.drawSurface = function(surf,offSet,n=20){
 
  
 //// MAIN -----------------------------------------------------------------------------------
-SystemPlot.prototype.SystemYPlot = function(rayField,opticalSystem){
+SystemPlot.prototype.systemYPlot = function(rayField,opticalSystem){
     //First start by plotting the surfaces
     //get the max off set
     let surfs = opticalSystem.surfaces;

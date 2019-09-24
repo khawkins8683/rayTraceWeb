@@ -120,6 +120,23 @@ window.onclick = function(event) {
         }
     }
 }
+//Set up plot 
+
+
+function plotSystem(){
+    //first clear the div
+    const myNode = document.getElementById("plotbox");
+    myNode.innerHTML = '';
+    //get the optical system
+    let yPlot = new SystemPlot(50,'plotbox',500,500);
+    let sys = new os.System();
+    sys.createSystem(getOpticalSystemData());
+    //console.log(sys);
+    let rayField = new ray.RayField([]);
+    yPlot.systemYPlot(rayField,sys);
+}
+plotbtn = document.getElementById('plotbtn');
+plotbtn.onclick = plotSystem;
 
 
 /// Server communication ------------------------------------------ ---------------------- ------------------ ------------- -

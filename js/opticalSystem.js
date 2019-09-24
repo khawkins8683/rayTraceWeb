@@ -228,7 +228,7 @@ if(typeof exports != 'undefined'){
         return pathObj;
     }
     System.prototype.maxSemiDiamter = function(){
-        let max = this.surfaces[1].aperture.semiDiameter;
+        let max = this.surfaces[0].aperture.semiDiameter;
         for(let i=1; i<this.surfaces.length; i++){
             let sd = this.surfaces[i].aperture.semiDiameter;
             if(sd>max) max = sd;
