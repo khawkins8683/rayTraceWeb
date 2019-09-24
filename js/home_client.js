@@ -29,15 +29,35 @@ function paramType(param){
     return t;
 }
 
-
+/// Add Surface Row ---------------------------------------------------------------------------
 let sID = 0;
 function addSurfaceInput(os, surfType){
     sID++;
     let inputs = inputList(os,surfType);
     //create s surface row
     let row = document.createElement('TR');
+    row.onclick = rightClick;
+
     let item = document.createElement("TD");
-    item.innerHTML = surfType;
+    let btn = document.createElement('BUTTON');
+    btn.className = 'dropbtn';
+    btn.innerHTML = surfType;
+    btn.onclick = showContent;
+    //add in type list
+    let dropContent = document.createElement('DIV');
+    dropContent.className = 'dropdown-content';
+    //now add a tags to dropcontent
+    let typeList = surfaceTypes(os);
+    for(let i=0; i<typeList.length; i++){
+        let aTag = document.createElement("A");
+        aTag.innerHTML = typeList[i];
+        //add event here
+        dropContent.append(aTag);
+    }
+    item.append(btn);
+    item.append(dropContent);
+
+
     row.append(item);
     //for each surface add an input
     for(let i=0; i<inputs.length; i++){
@@ -65,15 +85,21 @@ function addSurfaceInput(os, surfType){
     lp.append(row)
 }
 
-//MAin -------------------------------
+//MAin ------------------------------- ---------------------------------------------
 //Table headings
 let inputs = inputList(os,"Sphere");
 let lp = document.getElementById('lensPrescription');
 let row = document.createElement("TR");
+//add surface type => todo make surface typ a dropdown
 let item = document.createElement("TH");
 item.innerHTML = 'type';
 item.className = 'surfProp';
-row.append(item)
+row.append(item);
+//add surface system type
+item = document.createElement("TH");
+item.innerHTML = 'sysType';
+item.className = 'surfProp';
+row.append(item);
 for(let i=0; i<inputs.length; i++){
     item = document.createElement("TH");
     item.innerHTML = inputs[i][0];
@@ -82,8 +108,12 @@ for(let i=0; i<inputs.length; i++){
 }
 lp.append(row)
 
+
+/// Add surface events -------------------------------------------------------------------------
+//THis needs to be applied to the type
 let typeList = surfaceTypes(os);
 let dropDiv = document.getElementById('myDropdown');
+
 for(let i = 0; i<typeList.length; i++){
     let aTag = document.createElement("A");
     aTag.innerHTML = typeList[i];
@@ -96,10 +126,18 @@ for(let i = 0; i<typeList.length; i++){
 
 //Add surface btn
 let surfBTN = document.getElementById('surfbtn');
-surfBTN.onclick = function(){
-    document.getElementById("myDropdown").classList.toggle("show");
+showContent = function(){
+    //document.getElementById("myDropdown").classList.toggle("show");
+    let parent = this.parentNode;
+    console.log(parent);
+    let ctn = parent.getElementsByClassName('dropdown-content')[0];
+    console.log(ctn);
+    ctn.classList.toggle("show");
 }
-//surface power
+surfBTN.onclick = showContent/*function(){
+    document.getElementById("myDropdown").classList.toggle("show");
+}*/
+//surface power -----------------------------------------------------------------------------------
 setSysPower = function(){
     let sys = new os.System;//this should be defined globally and just updated
     sys.createSystem(getOpticalSystemData());
@@ -120,9 +158,24 @@ window.onclick = function(event) {
         }
     }
 }
-//Set up plot 
-
-
+///on right click event -----------------------------------------------------------------------------------
+// set to an on click event
+rightClick = function (e) {
+    var isRightMB;
+    e = e || window.event;
+    console.log('in click event');
+    if ("which" in e){  // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+        isRightMB = e.which == 3; 
+    }else if ("button" in e){  // IE, Opera 
+        isRightMB = e.button == 2; 
+    }
+    if(isRightMB){
+        console.log('right click');
+    }else{
+        console.log('left click');
+    }
+}
+//Set up plot ---------------------------------------------------------------------------------------------
 function plotSystem(){
     //first clear the div
     const myNode = document.getElementById("plotbox");

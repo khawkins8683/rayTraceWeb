@@ -34,9 +34,11 @@ if(typeof exports != 'undefined'){
         this.k = eta;//todo allow this to be off axis
         //this.semiDiameter = sd;//only circular for now
         this.aperture = {type:"circle", semiDiameter: sd}; 
-        this.type = type;//"reflect" or "refract"
+        this.type = {mode:type, system:'intermediate'};
+        //this.type = type;//"reflect" or "refract"{mode:'reflect', system:'stop'/'image'/'object'/'intermediate'}
         this.label = label;
     }
+    //add init shape method
     Surface.prototype.initAperture = function(sd=10){
         this.aperture = {type:"circle", semiDiameter: sd};
     }
